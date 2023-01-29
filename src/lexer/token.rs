@@ -1,7 +1,7 @@
 
 
 #[derive(Debug)]
-enum TokenType {
+pub enum TokenType {
     // Grammar
     LeftParen, RightParen,
     LeftCurly, RightCurly,
