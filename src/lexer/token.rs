@@ -32,3 +32,20 @@ pub enum TokenType {
 
     EOF
 }
+
+#[derive(Debug)]
+pub struct Token {
+    pub token_type: TokenType,
+    pub lexeme: String,
+    pub line: u32
+}
+
+impl Token {
+    pub fn new(token_type: TokenType, lexeme: String, line: u32) -> Token {
+        Token {
+            token_type,
+            lexeme,
+            line
+        }
+    }
+}
