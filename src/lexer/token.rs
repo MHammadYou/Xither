@@ -5,7 +5,7 @@ pub enum TokenType {
     // Grammar
     LeftParen, RightParen,
     LeftCurly, RightCurly,
-    LeftSqure, RightSqure,
+    LeftSqure, RightSqure, At,
     SemiColon, Comma, Dot, DotDot,
 
     // Operators
@@ -23,12 +23,12 @@ pub enum TokenType {
 
     // Reserved keywords
     If, Else, Loop, Let, Const,
-    Fn, Class, Return, At, SelfTok,
+    Fn, Class, Return, SelfTok,
     And, Or, Break, Continue,
 
     // Built-ins
-    LogFn, TypeFn, NumberFn, 
-    StringFn, BooleanFn,
+    LogFn, TypeFn, NumFn, 
+    StrFn, BoolFn,
 
     EOF
 }
