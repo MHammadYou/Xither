@@ -1,0 +1,15 @@
+[workspace] 
+members = [
+    "cli",
+    "parser"
+]
+
+[workspace.package]
+name = "xither"
+version = "0.0.1"
+edition = "2021"
+rust-version = "1.66"
+
+[workspace.dependencies]
+cli = { path = "cli" }
+parser = { path = "parser" }
