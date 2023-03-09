@@ -1,22 +1,24 @@
+use peekmore::{PeekMoreIterator, PeekMore};
 use std::collections::HashMap;
 
 use super::token::{TokenType, Token};
 
 
+// TODO: Add later
+// start: usize,
+// end: usize
 #[derive(Debug)]
 pub struct Lexer<'a> {
-    pub source: PeekMoreIterator<std::str::Chars<'a>>,
-    pub start: usize,
-    pub current: usize,
-    pub line: u32,
-    pub keywords: HashMap<String, TokenType>
+    source: PeekMoreIterator<std::str::Chars<'a>>,
+    current: usize,
+    line: u32,
+    keywords: HashMap<String, TokenType>
 }
 
 impl<'a> Lexer<'a> {
     pub fn new(source: &'a String) -> Lexer<'a> {
         Lexer {
             source: source.chars().peekmore(),
-            start: 0,
             current: 0,
             line: 1,
             keywords: HashMap::from([
