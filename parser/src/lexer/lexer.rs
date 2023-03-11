@@ -10,7 +10,7 @@ use super::token::{TokenType, Token};
 #[derive(Debug)]
 pub struct Lexer<'a> {
     source: PeekMoreIterator<std::str::Chars<'a>>,
-    current: usize,
+    // current: usize,
     line: u32,
     keywords: HashMap<String, TokenType>
 }
@@ -19,7 +19,7 @@ impl<'a> Lexer<'a> {
     pub fn new(source: &'a String) -> Lexer<'a> {
         Lexer {
             source: source.chars().peekmore(),
-            current: 0,
+            // current: 0,
             line: 1,
             keywords: HashMap::from([
                 (String::from("true"),      TokenType::True),
@@ -51,5 +51,23 @@ impl<'a> Lexer<'a> {
         let mut tokens = vec![];
 
         tokens
+    }
+
+    fn get_token(&mut self) -> Result<Token, LexerError> {
+        Ok(Token::new(TokenType::EOF, String::from("EOF"), self.line))
+    }
+
+    fn skip_whitespace(&mut self) {
+        while let Some(c) = self.source.peek() {
+            if c.is_whitespace() {
+                if matches!(c, '\n') {
+                    self.line += 1;
+                }
+                self.source.next();
+            } else {
+                break;
+            }
+
+        }
     }
 }
