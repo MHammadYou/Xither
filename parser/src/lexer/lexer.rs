@@ -71,3 +71,15 @@ impl<'a> Lexer<'a> {
         }
     }
 }
+
+
+pub struct LexerError {
+    pub error: String,
+    pub line: usize
+}
+
+impl std::fmt::Display for LexerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Lexer Error: {} at line {}", self.error, self.line)
+    }
+}
