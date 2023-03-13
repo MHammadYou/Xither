@@ -54,7 +54,7 @@ impl<'a> Lexer<'a> {
     }
 
     fn get_token(&mut self) -> Result<Token, LexerError> {
-        Ok(Token::new(TokenType::EOF, String::from("EOF"), self.line))
+        Ok(Token::new(TokenType::EOF, None, self.line))
     }
 
     fn skip_whitespace(&mut self) {
