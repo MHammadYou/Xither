@@ -1,6 +1,6 @@
 
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TokenType {
     // Grammar
     LeftParen, RightParen,
@@ -41,7 +41,11 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(token_type: TokenType, literal: Option<String>, line: u32) -> Token {
+    pub(crate) fn new(token_type: TokenType, literal: Option<String>, line: u32) -> Token {
         Token { token_type, literal, line }
+    }
+
+    pub(crate) fn is_type(&self, token_type: TokenType) -> bool {
+        self.token_type == token_type
     }
 }
