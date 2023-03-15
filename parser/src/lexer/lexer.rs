@@ -47,10 +47,23 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn get_tokens(&mut self) -> Vec<Token> {
+    pub fn get_tokens(&mut self) -> Result<Vec<Token>, LexerError> {
         let mut tokens = vec![];
 
-        tokens
+        loop {
+            match self.get_token() {
+                Ok(token) => {
+                    if token.is_type(TokenType::EOF) {
+                        tokens.push(token);
+                        break;
+                    }
+                    tokens.push(token)
+                }
+                Err(err) => return Err(err)
+            }
+        }
+
+        Ok(tokens)
     }
 
     fn get_token(&mut self) -> Result<Token, LexerError> {
