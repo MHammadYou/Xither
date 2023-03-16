@@ -37,11 +37,11 @@ pub enum TokenType {
 pub struct Token {
     pub token_type: TokenType,
     pub literal: Option<String>,
-    pub line: u32
+    pub line: usize
 }
 
 impl Token {
-    pub(crate) fn new(token_type: TokenType, literal: Option<String>, line: u32) -> Token {
+    pub(crate) fn new(token_type: TokenType, literal: Option<String>, line: usize) -> Token {
         Token { token_type, literal, line }
     }
 

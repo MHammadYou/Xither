@@ -11,7 +11,7 @@ use super::token::{TokenType, Token};
 pub struct Lexer<'a> {
     source: PeekMoreIterator<std::str::Chars<'a>>,
     // current: usize,
-    line: u32,
+    line: usize,
     keywords: HashMap<String, TokenType>
 }
 
@@ -67,7 +67,30 @@ impl<'a> Lexer<'a> {
     }
 
     fn get_token(&mut self) -> Result<Token, LexerError> {
-        Ok(Token::new(TokenType::EOF, None, self.line))
+        self.skip_whitespace();
+
+        match self.source.next() {
+            Some(c) => {
+                match c {
+                    '(' => self.make_token(TokenType::LeftParen, None),
+                    ')' => self.make_token(TokenType::RightParen, None),
+                    '{' => self.make_token(TokenType::LeftCurly, None),
+                    '}' => self.make_token(TokenType::RightCurly, None),
+                    '[' => self.make_token(TokenType::LeftSqure, None),
+                    ']' => self.make_token(TokenType::RightSqure, None),
+                    '@' => self.make_token(TokenType::At, None),
+                    ';' => self.make_token(TokenType::SemiColon, None),
+                    ',' => self.make_token(TokenType::Comma, None),
+                    '.' => self.make_token(TokenType::Dot, None),
+                    _ => Err(LexerError { error: String::from("Invalid character"), line: self.line })
+                }
+            }
+            None => return Ok(Token::new(TokenType::EOF, None, self.line)),
+        }
+    }
+
+    fn make_token(&mut self, token_type: TokenType, literal: Option<String>) -> Result<Token, LexerError> {
+        Ok(Token::new(token_type, literal, self.line))
     }
 
     fn skip_whitespace(&mut self) {
