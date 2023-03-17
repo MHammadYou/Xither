@@ -82,7 +82,18 @@ impl<'a> Lexer<'a> {
                     ';' => self.make_token(TokenType::SemiColon, None),
                     ',' => self.make_token(TokenType::Comma, None),
                     '.' => self.make_token(TokenType::Dot, None),
-                    _ => Err(LexerError { error: String::from("Invalid character"), line: self.line })
+
+                    '+' => self.make_token(TokenType::Plus, None),
+                    '-' => self.make_token(TokenType::Minus, None),
+                    '*' => self.make_token(TokenType::Star, None),
+                    '/' => self.make_token(TokenType::Slash, None),
+
+                    '!' => self.make_token(TokenType::Bang, None),
+                    '=' => self.make_token(TokenType::Equal, None),
+                    '>' => self.make_token(TokenType::Greater, None),
+                    '<' => self.make_token(TokenType::Less, None),
+
+                    _ => Err(LexerError { error: format!("Invalid character '{}'", c), line: self.line })
                 }
             }
             None => return Ok(Token::new(TokenType::EOF, None, self.line)),
