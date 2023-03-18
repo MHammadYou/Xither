@@ -72,36 +72,78 @@ impl<'a> Lexer<'a> {
         match self.source.next() {
             Some(c) => {
                 match c {
-                    '(' => self.make_token(TokenType::LeftParen, None),
-                    ')' => self.make_token(TokenType::RightParen, None),
-                    '{' => self.make_token(TokenType::LeftCurly, None),
-                    '}' => self.make_token(TokenType::RightCurly, None),
-                    '[' => self.make_token(TokenType::LeftSqure, None),
-                    ']' => self.make_token(TokenType::RightSqure, None),
-                    '@' => self.make_token(TokenType::At, None),
-                    ';' => self.make_token(TokenType::SemiColon, None),
-                    ',' => self.make_token(TokenType::Comma, None),
-                    '.' => self.make_token(TokenType::Dot, None),
+                    '(' => self.make_defualt_token(TokenType::LeftParen),
+                    ')' => self.make_defualt_token(TokenType::RightParen),
+                    '{' => self.make_defualt_token(TokenType::LeftCurly),
+                    '}' => self.make_defualt_token(TokenType::RightCurly),
+                    '[' => self.make_defualt_token(TokenType::LeftSqure),
+                    ']' => self.make_defualt_token(TokenType::RightSqure),
+                    '@' => self.make_defualt_token(TokenType::At),
+                    ';' => self.make_defualt_token(TokenType::SemiColon),
+                    ',' => self.make_defualt_token(TokenType::Comma),
+                    '.' => {
+                        if self.match_next('.') {
+                            return self.make_defualt_token(TokenType::DotDot)
+                        }
+                        self.make_defualt_token(TokenType::Dot)
+                    },
 
-                    '+' => self.make_token(TokenType::Plus, None),
-                    '-' => self.make_token(TokenType::Minus, None),
-                    '*' => self.make_token(TokenType::Star, None),
-                    '/' => self.make_token(TokenType::Slash, None),
+                    '+' => self.make_defualt_token(TokenType::Plus),
+                    '-' => self.make_defualt_token(TokenType::Minus),
+                    '*' => self.make_defualt_token(TokenType::Star),
+                    '/' => self.make_defualt_token(TokenType::Slash),
 
-                    '!' => self.make_token(TokenType::Bang, None),
-                    '=' => self.make_token(TokenType::Equal, None),
-                    '>' => self.make_token(TokenType::Greater, None),
-                    '<' => self.make_token(TokenType::Less, None),
+                    '!' => {
+                        if self.match_next('=') {
+                            return self.make_defualt_token(TokenType::BangEqual)
+                        }
+                        self.make_defualt_token(TokenType::Bang)
+                    }
+                    '=' => {
+                        if self.match_next('=') {
+                            return self.make_defualt_token(TokenType::EqualEqual)
+                        }
+                        self.make_defualt_token(TokenType::Equal)
+                    }
+                    '>' => {
+                        if self.match_next('=') {
+                            return self.make_defualt_token(TokenType::GreaterEqual)
+                        }
+                        self.make_defualt_token(TokenType::Greater)
+                    }
+                    '<' => {
+                        if self.match_next('=') {
+                            return self.make_defualt_token(TokenType::LessEqual)
+                        }
+                        self.make_defualt_token(TokenType::Less)
+                    }
 
                     _ => Err(LexerError { error: format!("Invalid character '{}'", c), line: self.line })
                 }
             }
-            None => return Ok(Token::new(TokenType::EOF, None, self.line)),
+            None => self.make_defualt_token(TokenType::EOF),
         }
     }
 
     fn make_token(&mut self, token_type: TokenType, literal: Option<String>) -> Result<Token, LexerError> {
         Ok(Token::new(token_type, literal, self.line))
+    }
+
+    fn make_defualt_token(&mut self, token_type: TokenType) -> Result<Token, LexerError> {
+        self.make_token(token_type, None)
+    }
+
+    fn match_next(&mut self, next: char) -> bool {
+        match self.source.peek() {
+            Some(c) => {
+                if *c == next {
+                    self.source.next();
+                    return true
+                }
+                false
+            }
+            None => false
+        }
     }
 
     fn skip_whitespace(&mut self) {
