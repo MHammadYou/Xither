@@ -86,10 +86,20 @@ impl<'a> Lexer<'a> {
                             return self.make_defualt_token(TokenType::DotDot)
                         }
                         self.make_defualt_token(TokenType::Dot)
-                    },
+                    }
 
-                    '+' => self.make_defualt_token(TokenType::Plus),
-                    '-' => self.make_defualt_token(TokenType::Minus),
+                    '+' => {
+                        if self.match_next('=') {
+                            return self.make_defualt_token(TokenType::PlusEqual)
+                        }
+                        self.make_defualt_token(TokenType::Plus)
+                    }
+                    '-' => {
+                        if self.match_next('=') {
+                            return self.make_defualt_token(TokenType::MinusEqual)
+                        }
+                        self.make_defualt_token(TokenType::Minus)
+                    }
                     '*' => self.make_defualt_token(TokenType::Star),
                     '/' => self.make_defualt_token(TokenType::Slash),
 
