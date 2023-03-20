@@ -128,11 +128,48 @@ impl<'a> Lexer<'a> {
                         self.make_defualt_token(TokenType::Less)
                     }
 
+                    '0'..='9' => self.handle_number(c),
+
                     _ => Err(LexerError { error: format!("Invalid character '{}'", c), line: self.line })
                 }
             }
             None => self.make_defualt_token(TokenType::EOF),
         }
+    }
+
+    fn handle_number(&mut self, start: char) -> Result<Token, LexerError> {
+        let mut literal = String::from(start);
+
+        while let Some(c) = self.source.peek() {
+            if !c.is_digit(10) {
+                break;
+            }
+            literal.push(*c);
+            self.source.next();
+        }
+
+        if let Some(&'.') = self.source.peek() {
+            self.source.advance_cursor();
+
+            match self.source.peek() {
+                Some(c) if c.is_digit(10) => {
+                    literal.push('.');
+                    self.source.next();
+
+                    while let Some(c) = self.source.peek() {
+                        if !c.is_digit(10) {
+                            break;
+                        }
+                        literal.push(*c);
+                        self.source.next();
+                    }
+
+                }
+                _ => self.source.reset_cursor()
+            }
+        }
+
+        self.make_token(TokenType::Number, Some(literal))
     }
 
     fn make_token(&mut self, token_type: TokenType, literal: Option<String>) -> Result<Token, LexerError> {
