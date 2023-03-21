@@ -129,6 +129,7 @@ impl<'a> Lexer<'a> {
                     }
 
                     '0'..='9' => self.handle_number(c),
+                    '"' => self.handle_string(),
 
                     _ => Err(LexerError { error: format!("Invalid character '{}'", c), line: self.line })
                 }
@@ -170,6 +171,26 @@ impl<'a> Lexer<'a> {
         }
 
         self.make_token(TokenType::Number, Some(literal))
+    }
+
+    fn handle_string(&mut self) -> Result<Token, LexerError> {
+        let mut literal = String::new();
+
+        while let Some(c) = self.source.peek() {
+            if matches!(c, '\n') {
+                self.line += 1;
+            }
+
+            if matches!(c, '"') {
+                self.source.next();
+                return self.make_token(TokenType::String, Some(literal))
+            }
+
+            literal.push(*c);
+            self.source.next();
+        }
+
+        Err(LexerError { error: String::from("Lexer Error: Unterminated string"), line: self.line })
     }
 
     fn make_token(&mut self, token_type: TokenType, literal: Option<String>) -> Result<Token, LexerError> {
