@@ -130,6 +130,7 @@ impl<'a> Lexer<'a> {
 
                     '0'..='9' => self.handle_number(c),
                     '"' => self.handle_string(),
+                    c if c.is_alphabetic() || matches!(c, '_') => self.handle_identifer(c),
 
                     _ => Err(LexerError { error: format!("Invalid character '{}'", c), line: self.line })
                 }
@@ -191,6 +192,24 @@ impl<'a> Lexer<'a> {
         }
 
         Err(LexerError { error: String::from("Lexer Error: Unterminated string"), line: self.line })
+    }
+
+    fn handle_identifer(&mut self, start: char) -> Result<Token, LexerError> {
+        let mut literal = String::from(start);
+
+        while let Some(c) = self.source.peek() {
+            if !(c.is_alphanumeric() || matches!(c, '_')) {
+                break;
+            }
+            
+            literal.push(*c);
+            self.source.next();
+        }
+
+        match self.keywords.get(&literal) {
+            Some(token_type) => self.make_defualt_token(*token_type),
+            None => self.make_token(TokenType::Identifier, Some(literal))
+        }
     }
 
     fn make_token(&mut self, token_type: TokenType, literal: Option<String>) -> Result<Token, LexerError> {
