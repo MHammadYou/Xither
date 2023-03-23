@@ -101,7 +101,12 @@ impl<'a> Lexer<'a> {
                         self.make_defualt_token(TokenType::Minus)
                     }
                     '*' => self.make_defualt_token(TokenType::Star),
-                    '/' => self.make_defualt_token(TokenType::Slash),
+                    '/' => {
+                        if self.match_next('/') {
+                            return self.handle_comment()
+                        }
+                        self.make_defualt_token(TokenType::Slash)
+                    }
 
                     '!' => {
                         if self.match_next('=') {
@@ -137,6 +142,16 @@ impl<'a> Lexer<'a> {
             }
             None => self.make_defualt_token(TokenType::EOF),
         }
+    }
+
+    fn handle_comment(&mut self) -> Result<Token, LexerError> {
+        while let Some(c) = self.source.peek() {
+            if matches!(c, '\n') {
+                break;
+            }
+            self.source.next();
+        }
+        self.get_token()
     }
 
     fn handle_number(&mut self, start: char) -> Result<Token, LexerError> {
