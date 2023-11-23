@@ -12,7 +12,11 @@ fn main() {
 
         if let Ok(source) = source {
             let tokens = Lexer::new(&source).get_tokens();
-            println!("{:#?}", tokens);
+            
+            match tokens {
+                Ok(tokens) => println!("{:#?}", tokens),
+                Err(error) => println!("{}", error),
+            }
         }
     } else {
         eprintln!("Error: No filename provided")

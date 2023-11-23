@@ -1,5 +1,6 @@
-use peekmore::{PeekMoreIterator, PeekMore};
 use std::collections::HashMap;
+
+use peekmore::{PeekMoreIterator, PeekMore};
 
 use super::{token::{TokenType, Token}, constants::get_keywords};
 
